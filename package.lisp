@@ -1,0 +1,2 @@
+(defpackage #:moss
+  (:use #:cl))
