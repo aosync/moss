@@ -57,14 +57,6 @@
   "Get a list of the children of the DATUM."
   '())
 
-(defmethod dt-pass-relax-order ((self datum) forms)
-  "Relax the relative order of execution of the non-volatile DATA."
-  (dolist (child (dt-children self))
-    (dt-pass-relax-order child forms))
-  (when (and (dt-volatile self)
-	     (not (find self forms)))
-    (vector-push-extend self forms)))
-
 (defclass tagref (datum)
   ((inner
     :initarg :inner

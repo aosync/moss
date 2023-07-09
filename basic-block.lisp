@@ -91,13 +91,15 @@
 
 (defmethod bb-relax-order ((self basic-block))
   "Relax the relative order of execution of the non-volatile DATA."
-  (let ((forms (make-array 0
-			   :element-type 'datum
-			   :adjustable t
-			   :fill-pointer 0)))
-    (loop :for form :across (bb-forms self)
-	  :do (dt-pass-relax-order form forms))  
-    (setf (bb-forms self) forms)))
+  (setf (bb-forms self)
+	(let ((forms (make-array 0
+				 :element-type 'datum
+				 :adjustable t
+				 :fill-pointer 0)))
+	  (loop :for form :across (bb-forms self)
+		:when (dt-volatile form)
+		  :do (vector-push-extend form forms))
+	  forms)))
 
 (defmethod bb-pass-clean ((self basic-block))
   "Clean the BASIC-BLOCKs: make PRODUCTs, relax order and make DEPs."
